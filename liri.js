@@ -3,17 +3,17 @@ const Spotify = require('node-spotify-api');
 const keys = require("./keys.js");
 const request = require('request');
 const spotify = new Spotify(keys.spotify)
+const fs = require("fs");
     // process.argv will print out any command line arguments
 const input = process.argv;
 // a variable to hold all possible liri commands entered
 // spotify-this-song // movie-this //
 const liriCommand =input[2];
 //If the liriCommand is spotify-this-song,we need a variable to hold the song name.
-let songName = " ";
-for(let i = 3; i < process.argv.length;i++){
-  songName += process.argv[i] + " "
+const songName = input[3];
+for(let i = 0; i < process.argv;i++){
+  console.log("The value at position " + i + " in the process.argv array is " + process.argv[i]);
   }
-  console.log(songName)
 //If the liriCommand is spotify-this-song, show song info for the specified song.
 if (liriCommand === "spotify-this-song") {
     getSongInfo(songName);
@@ -21,10 +21,16 @@ if (liriCommand === "spotify-this-song") {
 else if(liriCommand === 'movie-this'){
   movie(songName);
 }
+else if(liriCommand === "band-this"){
+    getConcert(songName);
+}
+else if(liriCommand === "do-what-i-say"){
+    readingRandom();
+}
 //run this function to get info about a specific song
 function getSongInfo(songName) {
 //  //Use the Spotify package to search for a song/track. Set search results limit to 10.
-spotify.search({type:'track',query:songName,limit: 10}, function(err,data){
+spotify.search({type:'track',query:songName,limit: 5}, function(err,data){
   if(err){
     return console.log('error occurred:'+err);
   };
@@ -67,10 +73,44 @@ console.log("movie")
 			console.log('Movie Language:', requestObject.Language);
 			console.log('Movie Plot:', requestObject.Plot);
 			console.log('Movie Actors:', requestObject.Actors);
-		//	AAAaaconsole.log('Movie RottenTotmatesRating:', requestObject.Ratings[1].Source, requestObject.Ratings[1].Value);
+			console.log('Movie RottenTotmatesRating:', requestObject.Ratings[1].Source, requestObject.Ratings[1].Value);
 			// console.log('Movie Url:', requestObject.Website); 
 		}
 	});
 
 };
-  
+
+function getConcert(liriInquiry){
+console.log("lol")
+   request(`https://rest.bandsintown.com/artists/${liriInquiry}/events?app_id=codingbootcamp`, function(error, response, body){
+
+       if(error){
+           console.log(error)
+           return (error);
+        
+       }
+       
+          let data = JSON.parse(body);//parses data to make it accessible
+
+          for(let i = 0; i < data.length; i++){
+          console.log('Venue name: ' + data[i].venue.name);
+          console.log('City:       ' + data[i].venue.city);
+          console.log('Country:    ' + data[i].venue.country + '\n');
+          }
+
+   });
+}
+
+function readingRandom(){
+    fs.readFile("random.txt","utf8",function(error,data){
+        if(error){
+            console.log(error);
+        }
+ 
+ 
+        var array = data.split(",");
+        var trackName = array[1];
+        console.log("**********************\n" + trackName + "\n***********************")
+        getSongInfo(trackName);
+    })
+ }

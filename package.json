@@ -18,6 +18,7 @@
   "homepage": "https://github.com/temkebei/liri-node-app#readme",
   "dependencies": {
     "dotenv": "^6.1.0",
+    "fs": "file:node_modules/fs",
     "inquire": "^0.4.8",
     "inquirer": "^6.2.0",
     "node-spotify-api": "^1.0.7"

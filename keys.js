@@ -9,3 +9,7 @@
     exports.moviekeys = {
     apikey: process.env.moviekeys
     };
+    exports.bandsInTown= {
+      apikey: process.env.bandsInTown
+    };
+
